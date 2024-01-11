@@ -1,4 +1,4 @@
-![PURE HTML CALCULATOR](AdityaRoy999/PURE-HTML-CALCULATOR/blob/main/cal%20(1).gif)
+![HTML Calculator](https://github.com/AdityaRoy999/PURE-HTML-CALCULATOR/blob/main/cal%20(1).gif)
 ## 🧮 PURE-HTML-CALCULATOR
 This repo showcases a Calculator made entirely in **HTML**
 ## 🧑‍💻 PROGRAMMING LANGUAGE USED 
