@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>3D Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    body {
+      background-color: #212121;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      transition: background-color 0.3s;
+    }
+
+    .calculator {
+      width: 300px;
+      margin: 0 auto;
+      margin-top: 100px;
+      background-color: #424242;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      perspective: 800px;
+      transform: rotateX(20deg);
+    }
+
+    .screen {
+      height: 60px;
+      line-height: 60px;
+      text-align: right;
+      padding: 0 10px;
+      background-color: #333333;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      transform-style: preserve-3d;
+      transform: translateZ(10px);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+    }
+
+    .button {
+      position: relative;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      background-color: #666666;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      transform-style: preserve-3d;
+      transform: translateZ(0);
+    }
+
+    .button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      transform-origin: center center;
+      transform: translateZ(30px) scale(0.9);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+    }
+
+    .button:hover::before {
+      transform: translateZ(30px) scale(1);
+      opacity: 1;
+    }
+
+    .button:active {
+      transform: translateZ(0) scale(0.95);
+    }
+
+    .button.operator {
+  background-color: #ff9500;
+}
+.button.clear {
+  background-color: #ff3b30;
+}
+
+    .button.equals {
+  background-color: #4cd963;
+}
+
+.dark-theme .button.operator.special {
+  background-color: #0066ff ;
+}
+
+.light-theme .button.operator.special {
+  background-color: #ffffff !important;
+}
+
+
+    .theme-switch {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background-color: #666666;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .theme-switch:hover {
+      background-color: #555555;
+    }
+
+    .theme-switch i {
+      color: #ffffff;
+    }
+
+.button.operator.special {
+  background-color: #0066ff;
+}
+    .dark-theme .calculator {
+      background-color: #1d1d1d;
+    }
+
+    .dark-theme .screen {
+      background-color: #464646;
+    }
+
+    .dark-theme .button {
+      background-color: #303030;
+    }
+
+    .dark-theme .button::before {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .dark-theme .button.operator {
+      background-color: #ff7500;
+    }
+
+    .dark-theme .button.clear {
+      background-color: #ff2d23;
+    }
+
+    .dark-theme .button.equals {
+      background-color: #44cc76;
+    }
+
+    .dark-theme .theme-switch {
+      background-color: #303030;
+    }
+
+    .dark-theme .theme-switch:hover {
+      background-color: #222222;
+    }
+
+    .dark-theme .theme-switch i {
+      color: #ffffff;
+    }
+      .calculator-info {
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="screen"></div>
+    <div class="buttons">
+      <div class="button clear">C</div>
+       <div class="button">9</div>
+      <div class="button">7</div>
+      <div class="button">8</div>
+  
+         <div class="button operator">/</div>
+      <div class="button">6</div>
+      <div class="button">4</div>
+      <div class="button">5</div>
+      <div class="button operator">*</div>
+      <div class="button">3</div>
+      <div class="button">1</div>
+      <div class="button">2</div>
+      <div class="button operator">-</div>
+      <div class="button operator special">√</div>
+      <div class="button">0</div>
+      <div class="button">.</div>
+      <div class="button operator">+</div>
+      <div class="button operator special">³√</div>
+      <div class="button operator special">log</div>
+      <div class="button equals">=</div>
+    </div>
+  </div>
+
+  <div class="theme-switch" onclick="changeTheme()">
+    <i class="fas fa-moon"></i>
+  </div>
+  <div class="calculator-info">
+    <p><b><u>For functions of log, square root, and cube root, first input the number, then click the functions to get the desired output.</b></u></p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+  <script>
+    const screen = document.querySelector('.screen');
+    const buttons = document.querySelectorAll('.button');
+    let expression = '';
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const value = button.textContent;
+
+        if (value === 'C') {
+          expression = '';
+        } else if (value === '=') {
+          try {
+            expression = eval(expression);
+          } catch (error) {
+            expression = 'Error';
+          }
+        } else if (value === '√') {
+          try {
+            expression = Math.sqrt(eval(expression));
+          } catch (error) {
+            expression = 'Error';
+          }
+        } else if (value === '³√') {
+          try {
+            expression = Math.cbrt(eval(expression));
+          } catch (error) {
+            expression = 'Error';
+          }
+        } else if (value === 'log') {
+          try {
+            expression = Math.log10(eval(expression));
+          } catch (error) {
+            expression = 'Error';
+          }
+        } else {
+          expression += value;
+        }
+
+        screen.textContent = expression;
+      });
+    });
+
+    function changeTheme() {
+      const body = document.querySelector('body');
+      const calculator = document.querySelector('.calculator');
+      const themeSwitch = document.querySelector('.theme-switch');
+
+      body.classList.toggle('dark-theme');
+      calculator.classList.toggle('dark-theme');
+      themeSwitch.classList.toggle('dark-theme');
+    }
+  </script>
+</body>
+</html>
